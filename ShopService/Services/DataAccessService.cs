@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using InvoiceDAService.Models;
 using InvoiceService.Data;
 using InvoiceService.Models;
 using InvoiceService.Services.Interfaces;
@@ -29,6 +30,9 @@ public class DataAccessService : IDataAccessService
     public void SubscribeToPersistence()
     {
         _messagingService.Subscribe("invoice-data",
+            (BasicDeliverEventArgs ea, string queue, string request) => RouteCallback(ea, queue, request),
+            ExchangeType.Topic, "*.*.request");
+        _messagingService.Subscribe("order-data",
             (BasicDeliverEventArgs ea, string queue, string request) => RouteCallback(ea, queue, request),
             ExchangeType.Topic, "*.*.request");
     }
@@ -119,6 +123,32 @@ public class DataAccessService : IDataAccessService
                     var json = JsonConvert.SerializeObject(updatedInvoice);
                     byte[] message = Encoding.UTF8.GetBytes(json);
                     _messagingService.Publish(exchange, queue, route, request, message);
+
+                    break;
+                }
+            case "addOrder":
+                {
+                    var order = JsonConvert.DeserializeObject<Order>(data);
+                    if (order == null)
+                        break;
+
+                    var invoice = new Invoice
+                    {
+                        Id = order.Id,
+                        Products = order.Products,
+                        TotalPrice = order.TotalPrice,
+                        UserGuid = order.UserGuid
+                    };
+                    
+
+                    var findinvoice = await context.Invoice.SingleOrDefaultAsync(m => m.Id == order.Id);
+                    if (findinvoice == null)
+                        break;
+                    context.Add(invoice);
+                    await context.SaveChangesAsync();
+                    //var json = JsonConvert.SerializeObject(newOrder);
+                    //byte[] message = Encoding.UTF8.GetBytes(json);
+                    //_messagingService.Publish(exchange, queue, route, request, message);
 
                     break;
                 }
