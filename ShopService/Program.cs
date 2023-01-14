@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using InvoiceService.Data;
 using InvoiceService.Controllers;
+using InvoiceService.dataaccess.Services;
 using InvoiceService.Services.Interfaces;
 using InvoiceService.Services;
 
@@ -10,9 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 var conStrBuilder = new MySqlConnectionStringBuilder(
     builder.Configuration.GetConnectionString("DBConnectionString"));
-var connection = conStrBuilder.ConnectionString;
+var mySqlConnectionString = conStrBuilder.ConnectionString;
 
-builder.Services.AddDbContext<InvoiceServiceContext>();
+builder.Services.AddDbContext<InvoiceServiceContext>(options =>
+    options.UseMySql(mySqlConnectionString, ServerVersion.AutoDetect(mySqlConnectionString)));
 //options =>
 //    options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
 
@@ -22,7 +24,7 @@ builder.Services.AddSingleton<IMessagingService, MessagingService>();
 
 //builder.Services.AddSingleton<IProductService, ProductService>();
 //builder.Services.AddSingleton<IMaterialService, MaterialService>();
-builder.Services.AddSingleton<IInvoiceService, InvoiceService.Services.InvoicesService>();
+builder.Services.AddSingleton<IDataAccessService, DataAccessService>();
 
 
 builder.Services.AddControllers();
@@ -45,9 +47,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//app.Services.GetRequiredService<IProductService>().SubscribeToGlobal();
-//app.Services.GetRequiredService<IMaterialService>().SubscribeToGlobal();
-app.Services.GetRequiredService<IInvoiceService>().SubscribeToGlobal();
+
+app.Services.GetRequiredService<IDataAccessService>().SubscribeToPersistence();
 
 
 app.Run();

@@ -9,14 +9,14 @@ namespace InvoiceService.Data
 {
     public class InvoiceServiceContext : DbContext
     {
-        //public ShopServiceContext (DbContextOptions<ShopServiceContext> options)
-        //    : base(options)
-        //{
-        //}
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public InvoiceServiceContext(DbContextOptions<InvoiceServiceContext> options)
+            : base(options)
         {
-            optionsBuilder.UseInMemoryDatabase(databaseName: "ShopDB");
         }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseInMemoryDatabase(databaseName: "ShopDB");
+        //}
 
         public DbSet<Product> Product { get; set; } = default!;
         public DbSet<Material> Material { get; set; } = default!;
