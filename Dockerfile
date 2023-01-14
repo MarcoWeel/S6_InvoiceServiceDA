@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["ShopService/ShopService.csproj", "ShopService/"]
-RUN dotnet restore "ShopService/ShopService.csproj"
+COPY ["ShopService/InvoiceDAService.csproj", "ShopService/"]
+RUN dotnet restore "ShopService/InvoiceDAService.csproj"
 COPY . .
 WORKDIR "/src/ShopService"
-RUN dotnet build "ShopService.csproj" -c Release -o /app/build
+RUN dotnet build "InvoiceDAService.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ShopService.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "InvoiceDAService.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ShopService.dll"]
+ENTRYPOINT ["dotnet", "InvoiceDAService.dll"]
