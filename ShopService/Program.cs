@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using InvoiceService.Data;
-using InvoiceService.Controllers;
 using InvoiceService.dataaccess.Services;
 using InvoiceService.Services.Interfaces;
 using InvoiceService.Services;
