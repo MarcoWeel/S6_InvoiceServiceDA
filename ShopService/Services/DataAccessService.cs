@@ -35,6 +35,9 @@ public class DataAccessService : IDataAccessService
         _messagingService.Subscribe("order-data",
             (BasicDeliverEventArgs ea, string queue, string request) => RouteCallback(ea, queue, request),
             ExchangeType.Topic, "*.*.request");
+        _messagingService.Subscribe("gdprexchange",
+            (BasicDeliverEventArgs ea, string queue, string request) => RouteCallback(ea, queue, request),
+            ExchangeType.Topic, "*");
     }
 
     private async void RouteCallback(BasicDeliverEventArgs ea, string queue, string request)
@@ -152,6 +155,16 @@ public class DataAccessService : IDataAccessService
 
                     break;
                 }
+            case "gdprDelete":
+            {
+                var orders = await context.Invoice.Where(m => m.UserGuid == Guid.Parse(data)).ToListAsync();
+                foreach (var order in orders)
+                {
+                    context.Invoice.Remove(order);
+                }
+                await context.SaveChangesAsync();
+                break;
+            }
             default:
                 Console.WriteLine($"Request {request} Not Found");
                 break;
