@@ -32,7 +32,7 @@ public class DataAccessService : IDataAccessService
         _messagingService.Subscribe("invoice-data",
             (BasicDeliverEventArgs ea, string queue, string request) => RouteCallback(ea, queue, request),
             ExchangeType.Topic, "*.*.request");
-        _messagingService.Subscribe("order-data",
+        _messagingService.Subscribe("order",
             (BasicDeliverEventArgs ea, string queue, string request) => RouteCallback(ea, queue, request),
             ExchangeType.Topic, "*.*.request");
         _messagingService.Subscribe("gdprexchange",
