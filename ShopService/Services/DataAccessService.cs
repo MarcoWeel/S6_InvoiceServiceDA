@@ -137,7 +137,7 @@ public class DataAccessService : IDataAccessService
 
                     var invoice = new Invoice
                     {
-                        Id = order.Id,
+                        Id = Guid.NewGuid(),
                         Products = order.Products,
                         TotalPrice = order.TotalPrice,
                         UserGuid = order.UserGuid
