@@ -129,7 +129,7 @@ public class DataAccessService : IDataAccessService
 
                     break;
                 }
-            case "addOrder":
+            case "addOrderToInvoice":
                 {
                     var order = JsonConvert.DeserializeObject<Order>(data);
                     if (order == null)
