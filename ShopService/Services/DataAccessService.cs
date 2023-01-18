@@ -34,7 +34,7 @@ public class DataAccessService : IDataAccessService
             ExchangeType.Topic, "*.*.request");
         _messagingService.Subscribe("order",
             (BasicDeliverEventArgs ea, string queue, string request) => RouteCallback(ea, queue, request),
-            ExchangeType.Topic, "*.*.request");
+            ExchangeType.Fanout, "*");
         _messagingService.Subscribe("gdprexchange",
             (BasicDeliverEventArgs ea, string queue, string request) => RouteCallback(ea, queue, request),
             ExchangeType.Topic, "*");
