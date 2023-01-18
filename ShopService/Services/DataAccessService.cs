@@ -145,7 +145,7 @@ public class DataAccessService : IDataAccessService
                     
 
                     var findinvoice = await context.Invoice.SingleOrDefaultAsync(m => m.Id == order.Id);
-                    if (findinvoice == null)
+                    if (findinvoice != null)
                         break;
                     context.Add(invoice);
                     await context.SaveChangesAsync();
