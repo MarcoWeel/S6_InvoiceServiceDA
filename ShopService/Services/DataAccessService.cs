@@ -144,7 +144,7 @@ public class DataAccessService : IDataAccessService
                     };
                     
 
-                    var findinvoice = await context.Invoice.SingleOrDefaultAsync(m => m.Id == order.Id);
+                    var findinvoice = await context.Invoice.FirstOrDefaultAsync(m => m.Id == order.Id);
                     if (findinvoice != null)
                         break;
                     context.Add(invoice);
